@@ -35,7 +35,7 @@ public class ExemplosComandoIF {
 			System.out.println("Você tem idade menor que 18 ou maior que 35!");
 			int intValor = 10; 
 		}
-		System.out.println("teste " + intValor);
+		//System.out.println("teste " + intValor);
 	}
 
 }
