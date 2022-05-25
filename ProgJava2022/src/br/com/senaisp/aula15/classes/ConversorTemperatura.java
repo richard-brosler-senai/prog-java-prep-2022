@@ -1,91 +1,72 @@
 package br.com.senaisp.aula15.classes;
 
-import javax.management.InvalidAttributeValueException;
-/**
- * Classe desenvolvida para conversão de temperaturas
- * @author Richard Brosler
- * @version 1.0.0.0
- *
- */
 public class ConversorTemperatura {
-	private int intOrigem;
-	private int intDestino;
-	private double dblTemperatura;
-	//Constructor
+	private int tipotempOri;
+	private int tipotempDes;
+	private double temperatura;
 	public ConversorTemperatura() {
-		this.intOrigem = 1;
-		this.intDestino = 1;
-		dblTemperatura = 0;
+		// TODO Auto-generated constructor stub
+		this.tipotempOri = 1; //Tipo temperatura origem
+		this.tipotempDes = 1;//Tipo temperatura destino
+		this.temperatura = 0; //valor temperatura
 	}
-	public int getIntOrigem() {
-		return intOrigem;
+	public int getTipotempOri() {
+		return tipotempOri;
 	}
 	/**
-	 * Setter para informar qual temperatura origem para converter a temperatura
-	 * Valores válidos são 1 - Celsius, 2 - Fahrenheit ou 3 - Kelvin
-	 * @param intOrigem Deve ser informado os valores 1, 2 ou 3
-	 * @throws InvalidAttributeValueException Se valores forem inválidos, causam uma exceção
+	 * Setter do tipo de temperatura de origem
+	 * Valores válidos: 1 - Celsius, 2 - Fahreinheit, 3 - Kelvin
+	 * @param tipotempOri Indicar valores de 1 a 3
+	 * @throws Exception Se valores inválidos, retorna Erro
 	 */
-	public void setIntOrigem(int intOrigem) throws InvalidAttributeValueException {
-		if (intOrigem != 1 && intOrigem != 2 && intOrigem !=3) {
-			throw new InvalidAttributeValueException("Valores válidos são 1, 2 ou 3!");
+	public void setTipotempOri(int tipotempOri) throws Exception {
+		if (tipotempOri!=1 && tipotempOri!=2 && tipotempOri!=3) {
+			throw new Exception("Valor inválido!");
 		}
-		this.intOrigem = intOrigem;
+		this.tipotempOri = tipotempOri;
 	}
-	public int getIntDestino() {
-		return intDestino;
+	public int getTipotempDes() {
+		return tipotempDes;
 	}
 	/**
-	 * Setter para informar qual temperatura destino será convertida a temperatura
-	 * Valores válidos são 1 - Celsius, 2 - Fahrenheit ou 3 - Kelvin
-	 * @param intDestino Deve ser informado os valores 1, 2 ou 3
-	 * @throws InvalidAttributeValueException Se valores forem inválidos, causam uma exceção
+	 * Setter do tipo de temperatura destino
+	 * Valores válidos: 1 - Celsius, 2 - Fahreinheit, 3 - Kelvin
+	 * @param tipotempDes Indicar valores de 1 a 3
+	 * @throws Exception Se valores inválidos, retorna Erro
 	 */
-	public void setIntDestino(int intDestino) throws InvalidAttributeValueException {
-		if (intDestino != 1 && intDestino != 2 && intDestino !=3) {
-			throw new InvalidAttributeValueException("Valores válidos são 1, 2 ou 3!");
+	public void setTipotempDes(int tipotempDes) throws Exception {
+		if (tipotempDes!=1 && tipotempDes!=2 && tipotempDes!=3) {
+			throw new Exception("Valor inválido!");
 		}
-		this.intDestino = intDestino;
+		this.tipotempDes = tipotempDes;
 	}
-	public double getDblTemperatura() {
-		return dblTemperatura;
+	public double getTemperatura() {
+		return temperatura;
 	}
-	public void setDblTemperatura(double dblTemperatura) {
-		this.dblTemperatura = dblTemperatura;
+	public void setTemperatura(double temperatura) {
+		this.temperatura = temperatura;
 	}
-	/**
-	 * Método público que irá retornar a temperatura calculada de acordo com 
-	 * os campos preenchidos
-	 * @return Retorna a temperatura calculada
-	 */
 	public double getTemperaturaConvertida() {
-		return calcularTemperatura();
-	}
-	/**
-	 * Método interno para calcular a temperatura
-	 * @return Retorna a temperatura calculada conforme os campos forem preenchidos
-	 */
-	private double calcularTemperatura() {
-		double dblTempConv=dblTemperatura;
-		if (this.intOrigem == 1) { // testando origem celsius
-			if (this.intDestino == 2) { // testando destino Fahrenheit
-				dblTempConv = this.dblTemperatura * 9 / 5 + 32;
-			} else if (this.intDestino == 3) { // testando destino kelvin
-				dblTempConv = this.dblTemperatura + 273;
+		double dblTempConv = this.temperatura;
+		if (tipotempOri == 1) { // testando origem celsius
+			if (tipotempDes == 2) { // testando destino Fahrenheit
+				dblTempConv = temperatura * 9 / 5 + 32;
+			} else if (tipotempDes == 3) { // testando destino kelvin
+				dblTempConv = temperatura + 273;
 			}
-		} else if (this.intOrigem == 2) { // testando origem fahrenheit
-			if (this.intDestino == 1) { // testando destino Celsius
-				dblTempConv = ( this.dblTemperatura - 32 ) * 5 / 9;
-			} else if (this.intDestino == 3) { // testando destino kelvin
-				dblTempConv = ( this.dblTemperatura - 32 ) * 5 / 9 + 273;
+		} else if (tipotempOri == 2) { // testando origem fahrenheit
+			if (tipotempDes == 1) { // testando destino Celsius
+				dblTempConv = ( temperatura - 32 ) * 5 / 9;
+			} else if (tipotempDes == 3) { // testando destino kelvin
+				dblTempConv = ( temperatura - 32 ) * 5 / 9 + 273;
 			}
 		} else { // Calculand origem Kelvin
-			if (this.intDestino == 1) { // testando destino Celsius
-				dblTempConv = this.dblTemperatura - 273;
-			} else if (this.intDestino == 2) { // testando destino Fahenheit
-				dblTempConv = ( this.dblTemperatura - 273 ) * 9 / 5 + 32;
+			if (tipotempDes == 1) { // testando destino Celsius
+				dblTempConv = temperatura - 273;
+			} else if (tipotempDes == 2) { // testando destino Fahenheit
+				dblTempConv = ( temperatura - 273 ) * 9 / 5 + 32;
 			}
 		}
-		return dblTempConv;
+		return dblTempConv;		
 	}
 }
