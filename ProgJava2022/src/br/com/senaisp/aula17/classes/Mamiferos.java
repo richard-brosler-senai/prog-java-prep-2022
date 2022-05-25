@@ -4,8 +4,11 @@ public class Mamiferos {
 	private String Nome;
 	private int Idade;
 	private String CorPelo;
+	//Campo Protegido
+	protected int AnoNascimento;
+	
 	public void Falar() {
-		System.out.println("Mamífero Falando");
+		System.out.println("Mamifero falando!");
 	}
 	public String getNome() {
 		return Nome;
@@ -25,4 +28,5 @@ public class Mamiferos {
 	public void setCorPelo(String corPelo) {
 		CorPelo = corPelo;
 	}
+
 }
