@@ -3,6 +3,7 @@ package br.com.senaisp.aula24.classes;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,6 +22,7 @@ public class FormListarProduto extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private DefaultTableModel tblModel;
+	private Produto produto;
 
 	/**
 	 * Launch the application.
@@ -57,7 +59,6 @@ public class FormListarProduto extends JFrame {
 		JButton btnNewButton = new JButton("Fechar");
 		panel.add(btnNewButton);
 		
-		Object tblDadosExemplo[] = {10, "Teste", 15.00};
 		String tblTitulo[] = { "Código", "Descrição", "Preço" }; 
 		
 		tblModel = new DefaultTableModel(tblTitulo,0); 
@@ -67,8 +68,22 @@ public class FormListarProduto extends JFrame {
 		JScrollPane pnlScroll = new JScrollPane(table);
 		
 		contentPane.add(pnlScroll, BorderLayout.CENTER);
-		
-		tblModel.addRow(tblDadosExemplo);
 	}
-
+	
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+		List<Produto> lstPrd = this.produto.getListaProdutos();
+		//Limpando os dados
+		if (tblModel.getRowCount()>0) {
+			for (int intI=tblModel.getRowCount()-1;intI>0;intI--) {
+				tblModel.removeRow(intI);
+			}
+		}
+		//Adicionando os dados
+		for (int intI=0;intI<lstPrd.size();intI++) {
+			Produto prd = lstPrd.get(intI);
+			Object it[] = {prd.getCodigo(),prd.getDescricao(),prd.getPreco()};
+			tblModel.addRow(it);
+		}
+	}
 }
