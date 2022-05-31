@@ -1,6 +1,6 @@
-package br.com.senaisp.aula25;
+package br.com.senaisp.aula23;
 
-import br.com.senaisp.aula25.classes.FormularioTeste;
+import br.com.senaisp.aula23.classes.FormularioTeste;
 
 public class TesteFormulario {
 

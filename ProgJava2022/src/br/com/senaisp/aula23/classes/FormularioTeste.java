@@ -1,4 +1,4 @@
-package br.com.senaisp.aula25.classes;
+package br.com.senaisp.aula23.classes;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
