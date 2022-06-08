@@ -21,6 +21,10 @@ public class FormProdutos extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private Produto prd;
+	private JTextField txtCodigo;
+	private JTextField txtDescricao;
+	private JFormattedTextField fmtFldPreco;
 
 	/**
 	 * Launch the application.
@@ -47,8 +51,8 @@ public class FormProdutos extends JFrame {
 		formatoDinheiro.setMaximumFractionDigits(2);
 		
 		setTitle("Manuten\u00E7\u00E3o de Produtos");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 300);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 600, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -73,23 +77,23 @@ public class FormProdutos extends JFrame {
 		JLabel lblCodigo = new JLabel("Código do Produto");
 		panelCodigo.add(lblCodigo);
 		
-		JTextField txtCodigo = new JTextField();
+		txtCodigo = new JTextField();
 		txtCodigo.setColumns(15);
 		panelCodigo.add(txtCodigo);
 		
 		JLabel lblDescricao = new JLabel("Descrição do Produto");
 		panelDescricao.add(lblDescricao);
 		
-		JTextField txtDescricao = new JTextField();
-		txtDescricao.setColumns(40);
+		txtDescricao = new JTextField();
+		txtDescricao.setColumns(35);
 		panelDescricao.add(txtDescricao);
 
 		JLabel lblPreco = new JLabel("Preço do Produto");
 		panelPreco.add(lblPreco);
 		
-		JFormattedTextField formattedTextField = new JFormattedTextField(formatoDinheiro);
-		formattedTextField.setColumns(20);
-		panelPreco.add(formattedTextField);
+		fmtFldPreco = new JFormattedTextField(formatoDinheiro);
+		fmtFldPreco.setColumns(20);
+		panelPreco.add(fmtFldPreco);
 		
 	
 		JPanel panelBotoes = new JPanel();
@@ -101,6 +105,13 @@ public class FormProdutos extends JFrame {
 		
 		JButton btnCancelar = new JButton("Cancelar");
 		panelBotoes.add(btnCancelar);
+	}
+	
+	public void setProduto(Produto value) {
+		prd = value;
+		txtCodigo.setText(Integer.toString(prd.getCodigo()));
+		txtDescricao.setText(prd.getDescricao());
+		fmtFldPreco.setValue(prd.getPreco());
 	}
 
 }
