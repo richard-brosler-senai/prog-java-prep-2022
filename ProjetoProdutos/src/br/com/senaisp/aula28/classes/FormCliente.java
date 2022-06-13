@@ -4,22 +4,26 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class FormCliente extends JFrame {
 
@@ -47,6 +51,7 @@ public class FormCliente extends JFrame {
 	 * Create the frame.
 	 */
 	public FormCliente() {
+		setTitle("Clientes");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 479);
 		contentPane = new JPanel();
@@ -97,7 +102,7 @@ public class FormCliente extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 		
-		String titulos[] = {"Código", "Nome", "Telefone" };
+		String titulos[] = {"Código", "Nome", "Telefone", "Data de Nascimento", "Estado Civil" };
 		
 		dtmClientes = new DefaultTableModel(titulos,0) {
 			@Override
@@ -120,13 +125,33 @@ public class FormCliente extends JFrame {
 				return cmp;
 			}
 		};
-		
-		for (int i=0;i<5;i++) {
-			Object itens[] = {i + 1, "Roberto " + (i + 1), "14 98765-4321"};		
+		tblClientes.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblClientes.getColumnModel().getColumn(0).setPreferredWidth(50);
+		tblClientes.getColumnModel().getColumn(1).setPreferredWidth(300);
+		tblClientes.getColumnModel().getColumn(2).setPreferredWidth(100);
+		tblClientes.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tblClientes.getColumnModel().getColumn(4).setPreferredWidth(100);
+		Calendar cal = Calendar.getInstance();
+		DateFormat fmtDate = new SimpleDateFormat("dd/MM/yyyy");
+		Random rdm = new Random();
+		cal.set(1977,01,18);
+		for (int i=0;i<100;i++) {
+			cal.add(Calendar.DATE, i);
+			Date dtnasc = cal.getTime();
+			Object itens[] = {i + 1, "Roberto " + (i + 1), "14 98765-4321", 
+							  fmtDate.format(dtnasc),
+							  EstadoCivil.values()[rdm.nextInt(5)]};
 			dtmClientes.addRow(itens);
 		}
 
 		scrollPane.setViewportView(tblClientes);
 	}
-
+	
+	public enum EstadoCivil {
+		Solteiro,
+		Casado,
+		Separado,
+		Divorciado,
+		Viuvo
+	}
 }
