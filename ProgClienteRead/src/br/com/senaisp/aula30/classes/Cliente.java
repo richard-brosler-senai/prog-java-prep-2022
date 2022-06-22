@@ -129,6 +129,7 @@ public class Cliente {
 		return ret;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public boolean deserializarLista(String caminho) {
 		boolean ret = false;
 		lstClientes.clear();
