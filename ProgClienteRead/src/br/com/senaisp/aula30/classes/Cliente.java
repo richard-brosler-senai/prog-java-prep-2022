@@ -1,8 +1,14 @@
 package br.com.senaisp.aula30.classes;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -14,6 +20,10 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -81,6 +91,62 @@ public class Cliente {
 		return ret;
 	}
 
+	public boolean importarArquivo(String caminho) {
+		return importarArquivo(caminho, TipoArquivo.CSV);
+	}
+	
+	public boolean exportarArquivo(String caminho, TipoArquivo tpArq) {
+		boolean ret = false;
+		switch (tpArq) {
+		case CSV:
+			ret = writeCSVFile(caminho);
+			break;
+		case JSON:
+			ret = writeJSONFile(caminho);
+			break;
+		case XML:
+			ret = writeXMLFile(caminho);
+			break;
+		}
+		return ret;
+	}	
+	
+	public boolean serializarLista(String caminho) {
+		boolean ret = false;
+		File arq = new File(caminho);
+		try {
+			arq.delete();
+			arq.createNewFile();
+			FileOutputStream fos = new FileOutputStream(arq);
+			ObjectOutputStream objO = new ObjectOutputStream(fos);
+			objO.writeObject(lstClientes);
+			objO.close();
+			ret = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return ret;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean deserializarLista(String caminho) {
+		boolean ret = false;
+		lstClientes.clear();
+		try {
+			File arq = new File(caminho);
+			if (arq.exists()) {
+				FileInputStream fis = new FileInputStream(arq);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				lstClientes = (ArrayList<Object[]>) ois.readObject();
+				ois.close();
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+	
 	private boolean readXMLFile(String caminho) {
 		boolean ret = false;
 		lstClientes.clear();
@@ -92,42 +158,35 @@ public class Cliente {
 			// Obtendo o nó root
 			Element root = doc.getDocumentElement();
 			// Obtendo a lista de filhos
-			NodeList listaNos = root.getChildNodes();
+			NodeList listaNos = root.getElementsByTagName("row");
 			// Percorrendo a lista de itens
 			for (int i = 0; i < listaNos.getLength(); i++) {
 				Node item = listaNos.item(i);
-				NodeList itens = item.getChildNodes();
-				if (itens.getLength() > 0) {
-					for (int f = 0; f < itens.getLength(); f++) {
-						Node itt = itens.item(f);
-						if (itt instanceof Element) {
-							switch(itt.getNodeName()) {
-							case "nome" : nome = itt.getTextContent(); break;
-							case "idade" : idade = Integer.parseInt(itt.getTextContent()); break;
-							case "cpf" : cpf = itt.getTextContent(); break;
-							case "rg" : rg = itt.getTextContent(); break;
-							case "data_nasc" : data_nasc = dtFmt.parse(itt.getTextContent()); break;
-							case "sexo" : sexo = itt.getTextContent(); break;
-							case "signo" : signo = itt.getTextContent(); break;
-							case "mae" : mae = itt.getTextContent(); break;
-							case "pai" : pai = itt.getTextContent(); break;
-							case "email" : email = itt.getTextContent(); break;
-							case "senha" : senha = itt.getTextContent(); break;
-							case "cep" : cep = itt.getTextContent(); break;
-							case "endereco" : endereco = itt.getTextContent(); break;
-							case "numero" : numero = Integer.parseInt(itt.getTextContent()); break;
-							case "bairro" : bairro = itt.getTextContent(); break;
-							case "cidade" : cidade = itt.getTextContent(); break;
-							case "estado" : estado = itt.getTextContent(); break;
-							case "telefone_fixo" : telefone_fixo = itt.getTextContent(); break;
-							case "celular" : celular = itt.getTextContent(); break;
-							case "altura" : altura = Double.parseDouble(itt.getTextContent().replace(",", ".")); break;
-							case "peso" : peso = Integer.parseInt(itt.getTextContent()); break;
-							case "tipo_sanguineo" : tipo_sanguineo = itt.getTextContent(); break;
-							case "cor" : cor = itt.getTextContent(); break;
-							}
-						}
-					}
+				if (item instanceof Element) {
+					Element itt = (Element) item;
+					nome = itt.getElementsByTagName("nome").item(0).getTextContent();
+					idade = Integer.parseInt(itt.getElementsByTagName("idade").item(0).getTextContent());
+					cpf = itt.getElementsByTagName("cpf").item(0).getTextContent();
+					rg = itt.getElementsByTagName("rg").item(0).getTextContent();
+					data_nasc = dtFmt.parse(itt.getElementsByTagName("data_nasc").item(0).getTextContent());
+					sexo = itt.getElementsByTagName("sexo").item(0).getTextContent();
+					signo = itt.getElementsByTagName("signo").item(0).getTextContent();
+					mae = itt.getElementsByTagName("mae").item(0).getTextContent();
+					pai = itt.getElementsByTagName("pai").item(0).getTextContent();
+					email = itt.getElementsByTagName("email").item(0).getTextContent();
+					senha = itt.getElementsByTagName("senha").item(0).getTextContent();
+					cep = itt.getElementsByTagName("cep").item(0).getTextContent();
+					endereco = itt.getElementsByTagName("endereco").item(0).getTextContent();
+					numero = Integer.parseInt(itt.getElementsByTagName("numero").item(0).getTextContent());
+					bairro = itt.getElementsByTagName("bairro").item(0).getTextContent();
+					cidade = itt.getElementsByTagName("cidade").item(0).getTextContent();
+					estado = itt.getElementsByTagName("estado").item(0).getTextContent();
+					telefone_fixo = itt.getElementsByTagName("telefone_fixo").item(0).getTextContent();
+					celular = itt.getElementsByTagName("celular").item(0).getTextContent();
+					altura = Double.parseDouble(itt.getElementsByTagName("altura").item(0).getTextContent().replace(",", "."));
+					peso = Integer.parseInt(itt.getElementsByTagName("peso").item(0).getTextContent());
+					tipo_sanguineo = itt.getElementsByTagName("tipo_sanguineo").item(0).getTextContent();
+					cor = itt.getElementsByTagName("cor").item(0).getTextContent();
 					Object it[] = {
 							nome,
 							idade,
@@ -264,9 +323,145 @@ public class Cliente {
 		}
 		return ret;
 	}
+	
+	private boolean writeXMLFile(String caminho) {
+		boolean ret = false;
+		try {
+			DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+			Document document = documentBuilder.newDocument();
+			
+			Element root = document.createElement("root");
+            document.appendChild(root);
+            
+            for (Object[] item : lstClientes) {
+            	Element linha = document.createElement("row");
+            	
+            	linha.appendChild(criarNo(document,"nome",(String) item[0]));
+            	linha.appendChild(criarNo(document,"idade",Integer.toString((int) item[1])));
+            	linha.appendChild(criarNo(document,"cpf",(String) item[2]));
+            	linha.appendChild(criarNo(document,"rg",(String) item[3]));
+            	linha.appendChild(criarNo(document,"data_nasc",dtFmt.format(item[4])));
+            	linha.appendChild(criarNo(document,"sexo",(String) item[5]));
+            	linha.appendChild(criarNo(document,"signo",(String) item[6]));
+            	linha.appendChild(criarNo(document,"mae",(String) item[7]));
+            	linha.appendChild(criarNo(document,"pai",(String) item[8]));
+            	linha.appendChild(criarNo(document,"email",(String) item[9]));
+            	linha.appendChild(criarNo(document,"senha",(String) item[10]));
+            	linha.appendChild(criarNo(document,"cep",(String) item[11]));
+            	linha.appendChild(criarNo(document,"endereco",(String) item[12]));
+            	linha.appendChild(criarNo(document,"numero",Integer.toString((int) item[13])));
+            	linha.appendChild(criarNo(document,"bairro",(String) item[14]));
+            	linha.appendChild(criarNo(document,"cidade",(String) item[15]));
+            	linha.appendChild(criarNo(document,"estado",(String) item[16]));
+            	linha.appendChild(criarNo(document,"telefone",(String) item[17]));
+            	linha.appendChild(criarNo(document,"celular",(String) item[18]));
+            	linha.appendChild(criarNo(document,"altura",Double.toString((double) item[19])));
+            	linha.appendChild(criarNo(document,"peso",Integer.toString((int) item[20])));
+            	linha.appendChild(criarNo(document,"tipo_sanguineo",(String) item[21]));
+            	linha.appendChild(criarNo(document,"cor",(String) item[22]));
+            	
+            	root.appendChild(linha);
+            }
+            
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(document);
+            FileOutputStream output = new FileOutputStream(caminho);
+            StreamResult result = new StreamResult(output);
+            transformer.transform(domSource, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+	
+	private Element criarNo(Document doc, String nomeNo, String valor) {
+		Element el = doc.createElement(nomeNo);
+		el.appendChild(doc.createTextNode(valor));
+		return el;
+	}
 
-	public boolean importarArquivo(String caminho) {
-		return importarArquivo(caminho, TipoArquivo.CSV);
+	private boolean writeJSONFile(String caminho) {
+		boolean ret = false;
+		try {
+			FileOutputStream fos = new FileOutputStream(caminho);
+			OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+			BufferedWriter bw = new BufferedWriter(osw);
+			JSONArray vetItens = new JSONArray();
+			for (Object[] item : lstClientes) {
+				JSONObject it = new JSONObject();
+				it.put("nome", item[0]);
+				it.put("idade", item[1]);
+				it.put("cpf", item[2]);
+				it.put("rg", item[3]);
+				it.put("data_nasc", dtFmt.format(item[4]));
+				it.put("sexo", item[5]);
+				it.put("signo", item[6]);
+				it.put("mae", item[7]);
+				it.put("pai", item[8]);
+				it.put("email", item[9]);
+				it.put("senha", item[10]);
+				it.put("cep", item[11]);
+				it.put("endereco", item[12]);
+				it.put("numero", item[13]);
+				it.put("bairro", item[14]);
+				it.put("cidade", item[15]);
+				it.put("estado", item[16]);
+				it.put("telefone", item[17]);
+				it.put("celular", item[18]);
+				it.put("altura", item[19]);
+				it.put("peso", item[20]);
+				it.put("tipo_sanguineo", item[21]);
+				it.put("cor", item[22]);
+				vetItens.put(it);
+			}
+			bw.write(vetItens.toString());
+			bw.close();
+			ret = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
+	private boolean writeCSVFile(String caminho) {
+		boolean ret = false;
+		try {
+			FileOutputStream fos = new FileOutputStream(caminho);
+			OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+			BufferedWriter bw = new BufferedWriter(osw);
+			for (Object[] item : lstClientes) {
+				bw.write(item[0] + ","); //nome
+				bw.write(item[1] + ","); //idade
+				bw.write(item[2] + ","); //cpf
+				bw.write(item[3] + ","); //rg
+				bw.write(dtFmt.format(item[4]) + ","); //dtnasc
+				bw.write(item[5] + ","); //sexo
+				bw.write(item[6] + ","); //signo
+				bw.write(item[7] + ","); //mae
+				bw.write(item[8] + ","); //pai
+				bw.write(item[9] + ","); //email
+				bw.write(item[10] + ","); //senha
+				bw.write(item[11] + ","); //cep
+				bw.write(item[12] + ","); //endereco
+				bw.write(item[13] + ","); //numero
+				bw.write(item[14] + ","); //bairro
+				bw.write(item[15] + ","); //cidade
+				bw.write(item[16] + ","); //estado
+				bw.write(item[17] + ","); //telefone
+				bw.write(item[18] + ","); //celular
+				bw.write(String.format("%5.2f", item[19]) + ","); //altura
+				bw.write(item[20] + ","); //peso
+				bw.write(item[21] + ","); //tipo sanguineo
+				bw.write(item[22] + "\r\n"); //cor
+			}
+			bw.close();
+			ret = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
 	}
 
 	private void inicializador() {
