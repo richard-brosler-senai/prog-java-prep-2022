@@ -9,14 +9,14 @@ public class ConexaoBD {
 	private static final String DB_HOST = "localhost";
 	private static final String DB_USER = "root";
 	private static final String DB_PASS = "Sen@i2021*";
-	private static final String DB_DATABASE = "senai_java_2022_01";
+	private static final String DB_DATABASE = "prog_java_2022_teste";
 	private static final String DB_DRIVER = "mysql";
 	private static final int DB_PORT = 3306;
 	
 	private static ConexaoBD instancia;
 	
 	private Connection fConn;
-	private Statement fStmt;
+
 	private String fConnString;
 	private String fDBUsername;
 	private String fDBPassword;
@@ -33,10 +33,6 @@ public class ConexaoBD {
 			instancia = new ConexaoBD();
 		}
 		return instancia;
-	}
-	
-	public Statement getStmt() {
-		return fStmt;
 	}
 	
 	public Connection getConn() {
@@ -70,14 +66,10 @@ public class ConexaoBD {
 	public void connectDB() throws SQLException {
 		//obtendo a conexão com o banco de dados
 		fConn = DriverManager.getConnection(getConnectionString(),getDBUsername(),getDBPassword());
-		//criando a instrução para execução de SQLs
-		fStmt = fConn.createStatement();
 	}
 
 	public void disconnectBD() throws SQLException {
-		if (fStmt!= null) fStmt.close();
 		if (fConn!= null) fConn.close();
-		fStmt = null;
 		fConn = null;
 	}
 	
