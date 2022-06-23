@@ -112,7 +112,7 @@ public class Cliente {
 		nome="";
 		endereco="";
 		numero="";
-		complemento="";
+		complemento=null;
 		bairro="";
 		cidade="";
 		uf="";
