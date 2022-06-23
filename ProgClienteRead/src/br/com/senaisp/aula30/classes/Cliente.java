@@ -237,6 +237,7 @@ public class Cliente {
 			}
 
 			JSONArray obj = new JSONArray(strBuff.toString());
+			System.out.println(obj.toString());
 			for (int i = 0; i < obj.length(); i++) {
 				JSONObject itens = obj.getJSONObject(i);
 
