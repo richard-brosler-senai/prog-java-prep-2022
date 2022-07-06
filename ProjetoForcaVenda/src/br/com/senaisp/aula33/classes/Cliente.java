@@ -3,11 +3,13 @@ package br.com.senaisp.aula33.classes;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -22,14 +24,12 @@ public class Cliente {
 	private String bairro;
 	private String cidade;
 	private String uf;
+	private String cep;
 	private String cpf;
 	private String rg;
 	private Date data_nasc;
 	private DateFormat dtFmt;
 	private DateFormat dtFmtSQL;
-
-	private String cep;
-
 	/**
 	 * Constructor Cliente
 	 */
@@ -128,21 +128,12 @@ public class Cliente {
 		this.data_nasc = data_nasc;
 	}
 
-	public void setData_nasc(String value) {
-		Date dt = null;
-		if (value != null) {
-			try {
-				if (Pattern.matches("\\d{4}\\-\\d{2}\\-\\d{2}", value)) {
-					dt = dtFmtSQL.parse(value);
-				} else {
-					dt = dtFmt.parse(value);
-				}
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	public java.sql.Date getData_nascSQL() {
+		java.sql.Date dtnas = null;
+		if (data_nasc != null) {
+			dtnas = java.sql.Date.valueOf(data_nasc.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		}
-		this.data_nasc = dt;
+		return dtnas;
 	}
 
 	// Fim Getters e Setters
@@ -189,6 +180,43 @@ public class Cliente {
 		rs.next();
 		id = rs.getInt(1);
 		System.out.println("Id gerado = " + id);
+		conexao.disconnectBD();
+	}
+
+	public boolean read() throws SQLException {
+		boolean ret = false;
+		conexao.connectDB();
+		Connection conn = conexao.getConn();
+		String sql = "select * from cliente where id = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, id);
+		ResultSet rs = stmt.executeQuery();
+		ResultSetMetaData rsm = stmt.getMetaData();
+		System.out.print("Colunas: ");
+		for (int intI = 1; intI <= rsm.getColumnCount(); intI++) {
+			if (intI > 1)
+				System.out.print(",");
+			System.out.print(rsm.getColumnName(intI));
+		}
+		System.out.println();
+		if (rs.next()) {
+			ret = true;
+			nome = rs.getString(2);
+			endereco = rs.getString(3);
+			numero = rs.getString(4);
+			complemento = rs.getString(5);
+			bairro = rs.getString(6);
+			cidade = rs.getString(7);
+			uf = rs.getString(8);
+			cep = rs.getString(9);
+			cpf = rs.getString(10);
+			rg = rs.getString(11);
+			setData_nasc(rs.getDate(12));
+		} else {
+			System.out.println("Registro não encontrado!");
+		}
+		conexao.disconnectBD();
+		return ret;
 	}
 
 	public void createDireto() throws SQLException {
@@ -216,11 +244,5 @@ public class Cliente {
 
 	public String getCep() {
 		return cep;
-	}
-
-	public boolean read() throws SQLException {
-		// TODO Auto-generated method stub
-		conexao.connectDB();
-		return false;
 	}
 }
