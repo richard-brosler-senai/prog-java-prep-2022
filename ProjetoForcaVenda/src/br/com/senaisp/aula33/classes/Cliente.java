@@ -209,12 +209,18 @@ public class Cliente {
 		id = rs.getInt(1);
 		System.out.println("ID -> " + id);
 	}
-
+	
 	public void setCep(String value) {
 		cep = value;
 	}
 
 	public String getCep() {
 		return cep;
+	}
+
+	public boolean read() throws SQLException {
+		// TODO Auto-generated method stub
+		conexao.connectDB();
+		return false;
 	}
 }

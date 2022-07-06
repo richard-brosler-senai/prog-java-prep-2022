@@ -16,12 +16,13 @@ public class ConexaoBD {
 	private static ConexaoBD instancia;
 	
 	private Connection fConn;
-	
+
 	private String fDBDriver;
 	private String fDBHost;
 	private int fDBPort;
 	private String fDBDatabase;
 	
+	private String fConnString;
 	private String fDBUsername;
 	private String fDBPassword;
 	private boolean fInicializado;
